@@ -49,7 +49,7 @@ export class AuthService {
     if (!user) throw CustomError.badRequest('User not exist');
 
     const isMatching = bcryptAdapter.compare(
-      loginUserDto.password,
+      loginUserDto.password as string,
       user.password
     );
     if (!isMatching) throw CustomError.badRequest('Password is not valid');

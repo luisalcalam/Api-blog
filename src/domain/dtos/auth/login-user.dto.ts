@@ -1,15 +1,32 @@
+import {
+  IsNotEmpty,
+  IsString,
+  validate,
+  ValidationError,
+} from 'class-validator';
+
 export class LoginUserDto {
-  private constructor(public username: string, public password: string) {}
+  @IsString({ message: 'El nombre de usuario debe de ser texto' })
+  @IsNotEmpty({ message: 'El nombre de usuario es necesario' })
+  username?: string;
 
-  static create(object: { [key: string]: any }): [string?, LoginUserDto?] {
+  @IsString({ message: 'El password debe de ser texto' })
+  @IsNotEmpty({ message: 'El password es necesario' })
+  password?: string;
+  private constructor(username: string, password: string) {
+    this.username = username;
+    this.password = password;
+  }
+
+  static async create(object: {
+    [key: string]: any;
+  }): Promise<[ValidationError[]?, LoginUserDto?]> {
     const { username, password } = object;
+    const newDto = new LoginUserDto(username, password);
 
-    // if ( !name ) return ['Missing name'];
-    // if ( !email ) return ['Missing email'];
-    // if ( !regularExps.email.test( email ) ) return ['Email is not valid'];
-    // if ( !password ) return ['Missing password'];
-    // if ( password.length < 6 ) return ['Password too short'];
+    const errors = await validate(newDto);
+    const dtoErrors = errors?.length > 0 ? errors : undefined;
 
-    return [undefined, new LoginUserDto(username, password)];
+    return [dtoErrors, newDto];
   }
 }

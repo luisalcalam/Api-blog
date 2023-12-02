@@ -1,19 +1,37 @@
+import {
+  IsNotEmpty,
+  IsString,
+  validate,
+  ValidationError,
+} from 'class-validator';
+
 export class RegisterUserDto {
-  private constructor(
-    public name: string,
-    public username: string,
-    public password: string
-  ) {}
+  @IsString({ message: 'El nombre debe de ser texto' })
+  @IsNotEmpty({ message: 'El nombre es necesario' })
+  name?: string;
 
-  static create(object: { [key: string]: any }): [string?, RegisterUserDto?] {
+  @IsString({ message: 'El nombre de usuario debe de ser texto' })
+  @IsNotEmpty({ message: 'El nombre de usuario es necesario' })
+  username?: string;
+
+  @IsString({ message: 'El password debe de ser texto' })
+  @IsNotEmpty({ message: 'El password es necesario' })
+  password?: string;
+  private constructor(name: string, username: string, password: string) {
+    this.name = name;
+    this.username = username;
+    this.password = password;
+  }
+
+  static async create(object: {
+    [key: string]: any;
+  }): Promise<[ValidationError[]?, RegisterUserDto?]> {
     const { name, username, password } = object;
+    const newDto = new RegisterUserDto(name, username, password);
 
-    // if ( !name ) return ['Missing name'];
-    // if ( !email ) return ['Missing email'];
-    // if ( !regularExps.email.test( email ) ) return ['Email is not valid'];
-    // if ( !password ) return ['Missing password'];
-    // if ( password.length < 6 ) return ['Password too short'];
+    const errors = await validate(newDto);
+    const dtoErrors = errors?.length > 0 ? errors : undefined;
 
-    return [undefined, new RegisterUserDto(name, username, password)];
+    return [dtoErrors, newDto];
   }
 }

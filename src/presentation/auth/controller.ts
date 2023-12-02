@@ -16,9 +16,9 @@ export class AuthController {
     return res.status(500).json({ error: 'Internal server error' });
   };
 
-  loginUser = (req: Request, res: Response) => {
-    const [error, loginUserDto] = LoginUserDto.create(req.body);
-    if (error) return res.status(400).json({ error });
+  loginUser = async (req: Request, res: Response) => {
+    const [errors, loginUserDto] = await LoginUserDto.create(req.body);
+    if (errors) return res.status(400).json({ errors });
 
     this.authService
       .loginUser(loginUserDto!)
