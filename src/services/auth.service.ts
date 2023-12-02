@@ -3,9 +3,9 @@ import { UserEntity } from '../domain/entities/user.entity';
 import { JwtAdapter } from '../common/adapters/jwt.adapter';
 import { CustomError } from '../common/utilities/custom.error';
 import { bcryptAdapter } from '../common/adapters/bcript.adapter';
-import { RegisterUserDto } from '../common/dtos/auth/register-user.dto';
+import { RegisterUserDto } from '../domain/dtos/auth/register-user.dto';
 import { dataSourceDB } from '../app';
-import { LoginUserDto } from '../common/dtos/auth/login-user.dto';
+import { LoginUserDto } from '../domain/dtos/auth/login-user.dto';
 
 export class AuthService {
   public async registerUser(registerUserDto: RegisterUserDto) {
