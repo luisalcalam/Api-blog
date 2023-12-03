@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsnd --respawn src/app.ts",
     "build": "rimraf .dist && tsc",
-    "prod": "npm run build && node dist/app.js"
+    "prod": "npm run build && node dist/app.js",
+    "start": "npm run build && node dist/app.js"
   },
   "author": "",
   "license": "ISC",
