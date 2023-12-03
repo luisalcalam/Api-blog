@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { BasicEntity } from './basic.entity';
+import { PublicationEntity } from './publication.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BasicEntity {
@@ -17,4 +18,7 @@ export class UserEntity extends BasicEntity {
 
   @Column({ type: 'varchar', length: 255, default: '12345' })
   password!: string;
+
+  @OneToMany(() => PublicationEntity, (publication) => publication.author)
+  publications!: PublicationEntity[];
 }

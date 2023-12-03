@@ -9,3 +9,10 @@ export interface Pagination {
   totalPages: number;
   totalRows: number;
 }
+
+export interface ReadingTime {
+  text: string;
+  minutes: number;
+  time: number;
+  words: number;
+}

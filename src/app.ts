@@ -5,6 +5,7 @@ import { Server } from './presentation/server';
 import { DataSource } from 'typeorm';
 import { UserEntity } from './data/postgresql/databaseEntities/user.entity';
 import { CategoryEntity } from './data/postgresql/databaseEntities/category.entity';
+import { PublicationEntity } from './data/postgresql/databaseEntities/publication.entity';
 
 export const dataSourceDB = new DataSource({
   type: 'postgres',
@@ -12,7 +13,7 @@ export const dataSourceDB = new DataSource({
   database: envs.POSTGRES_DB,
   synchronize: true,
   // logging: true,
-  entities: [UserEntity, CategoryEntity],
+  entities: [UserEntity, CategoryEntity, PublicationEntity],
 });
 
 (async () => {

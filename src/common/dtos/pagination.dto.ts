@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class PaginationDto {
-  private constructor(
+  constructor(
     q: string,
     perPage: string | number = 15,
     currentPage: string | number = 1,

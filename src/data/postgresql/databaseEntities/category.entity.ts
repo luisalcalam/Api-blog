@@ -1,5 +1,6 @@
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from 'typeorm';
 import { BasicEntity } from './basic.entity';
+import { PublicationEntity } from './publication.entity';
 
 @Entity({ name: 'categories' })
 export class CategoryEntity extends BasicEntity {
@@ -9,6 +10,6 @@ export class CategoryEntity extends BasicEntity {
   @Column({ type: 'varchar', length: 255, unique: true })
   name!: string;
 
-  // @OneToMany(() => Publication, (publication) => publication.category)
-  // publications: Publication[];
+  @OneToMany(() => PublicationEntity, (publication) => publication.category)
+  publications!: PublicationEntity[];
 }

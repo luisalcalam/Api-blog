@@ -96,7 +96,6 @@ export abstract class GenericService<
         totalPages,
         totalRows: data[1],
       };
-      console.log(pagination);
       return {
         content: data[0],
         pagination,
@@ -107,7 +106,7 @@ export abstract class GenericService<
     }
   }
 
-  async findOne(id: number): Promise<CustomResponse<ENTITY>> {
+  async findOne(id: ID): Promise<CustomResponse<ENTITY>> {
     try {
       const options: FindOptionsWhere<ENTITY> = {
         where: { id },

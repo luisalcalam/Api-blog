@@ -6,27 +6,25 @@ import { bcryptAdapter } from '../common/adapters/bcript.adapter';
 import { RegisterUserDto } from '../domain/dtos/auth/register-user.dto';
 import { dataSourceDB } from '../app';
 import { LoginUserDto } from '../domain/dtos/auth/login-user.dto';
+import { GenericService } from './generic.service';
+import { Repository } from 'typeorm';
 
-export class AuthService {
+export class AuthService extends GenericService<UserEntity, string> {
+  constructor(private userRepo: Repository<UserEntity>) {
+    super(userRepo, 'el autor');
+  }
+
   public async registerUser(registerUserDto: RegisterUserDto) {
-    const userRepository = dataSourceDB.getRepository(UserEntity);
-    console.log(`registerUser service`, { RegisterUserDto });
-
-    const existUser = await userRepository.findOne({
+    const existUser = await this.userRepo.findOne({
       where: { username: registerUserDto.username },
     });
-    console.log({ existUser });
     if (existUser) throw CustomError.badRequest('Username already exist');
 
     try {
       registerUserDto.password = bcryptAdapter.hash(
         registerUserDto.password as string
       );
-      const user = userRepository.create(registerUserDto);
-
-      // Encriptar la contraseña
-
-      await userRepository.save(user);
+      const user = await super.create(registerUserDto);
 
       const { password, ...userEntity } = User.fromObject(user);
 
@@ -43,9 +41,7 @@ export class AuthService {
   }
 
   public async loginUser(loginUserDto: LoginUserDto) {
-    const userRepository = dataSourceDB.getRepository(UserEntity);
-
-    const user = await userRepository.findOne({
+    const user = await this.userRepo.findOne({
       where: { username: loginUserDto.username },
     });
     if (!user) throw CustomError.badRequest('User not exist');
