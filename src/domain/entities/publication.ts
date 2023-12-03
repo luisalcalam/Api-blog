@@ -16,13 +16,14 @@ export class Publication {
   ) {}
 
   public get slug(): string {
-    const normalizedTitle = this.title
+    const slug = `${this.title}${GeneralUtilities.getAleatoryText()}`;
+    const normalizedTitle = slug
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
 
-    return normalizedTitle + GeneralUtilities.getAleatoryText();
+    return normalizedTitle;
   }
 
   public get wordCount(): number {

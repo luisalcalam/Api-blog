@@ -6,6 +6,7 @@ import {
   Pagination,
 } from '../common/interfaces/common.interfaces';
 import { PublicationParamsDto } from '../domain/dtos/publication/publicationsParams.dto';
+import { CustomError } from '../common/utilities/custom.error';
 export class PublicationService extends GenericService<
   PublicationEntity,
   string
@@ -76,5 +77,34 @@ export class PublicationService extends GenericService<
       content: data[0],
       pagination,
     };
+  }
+
+  async findOneBySlug(slug: string): Promise<PublicationEntity> {
+    try {
+      const queryBuilder: SelectQueryBuilder<PublicationEntity> =
+        this.publicationRepo.createQueryBuilder('publication');
+
+      queryBuilder
+        .leftJoinAndSelect('publication.author', 'author')
+        .leftJoinAndSelect('publication.category', 'category')
+        .select([
+          'publication',
+          'author.id',
+          'author.name',
+          'category.id',
+          'category.name',
+        ]);
+
+      queryBuilder.where('publication.slug = :slug', {
+        slug: slug,
+      });
+
+      const publication = await queryBuilder.getOne();
+      if (!publication) throw CustomError.notFound('Articulo no encontrado');
+      return publication;
+    } catch (error) {
+      console.log(error);
+      throw CustomError.internalServer('Internal error');
+    }
   }
 }

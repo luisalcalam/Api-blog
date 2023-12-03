@@ -37,6 +37,12 @@ export class PublicationController {
     res.json({ response });
   };
 
+  getOneBySlug = async (req: Request, res: Response) => {
+    const { url } = req.params;
+    const response = await this.publicatonService.findOneBySlug(url);
+    res.json({ response });
+  };
+
   post = async (req: Request, res: Response) => {
     const [createPublicationDto, errors] = await CreatePublicationDto.create(
       req.body

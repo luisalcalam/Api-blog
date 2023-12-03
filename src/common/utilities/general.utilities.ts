@@ -2,8 +2,7 @@ import { Index } from 'typeorm';
 
 export class GeneralUtilities {
   static getAleatoryText(limit: number = 4): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     let text = '';
 
     for (let i = 0; i < 4; i++) {

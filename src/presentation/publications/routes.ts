@@ -17,6 +17,7 @@ export class PublicationsRoutes {
 
     router.get('/', controller.getAll);
     router.get('/:id', controller.getOne);
+    router.get('/slug/:url', controller.getOneBySlug);
     router.post('/', controller.post);
     router.patch('/:id', controller.patch);
     router.delete('/:id', controller.delete);
