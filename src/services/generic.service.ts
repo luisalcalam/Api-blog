@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { CustomError } from '../common/utilities/custom.error';
 import { DeepPartial } from '../common/types/common.types';
 import {
@@ -7,7 +7,10 @@ import {
 } from '../common/interfaces/common.interfaces';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 
-export abstract class GenericService<ENTITY, ID, DTO, PARTIAL_DTO> {
+export abstract class GenericService<
+  ENTITY extends Record<string, any>,
+  ID extends string | number
+> {
   private readonly genericRepository: Repository<ENTITY>;
   private label: string;
 
@@ -18,7 +21,7 @@ export abstract class GenericService<ENTITY, ID, DTO, PARTIAL_DTO> {
 
   async create(data: DeepPartial<ENTITY>): Promise<ENTITY> {
     try {
-      // const d: DeepPartial<ENTITY> = {};
+      // const d: DeepPartial<ENENTITYIENTITYY> = {};
       const newItem = this.genericRepository.create(data);
       await this.genericRepository.save(newItem);
       return newItem;
@@ -30,7 +33,11 @@ export abstract class GenericService<ENTITY, ID, DTO, PARTIAL_DTO> {
 
   async update(id: ID, data: DeepPartial<ENTITY>): Promise<ENTITY> {
     try {
-      const item = await this.genericRepository.findOne(id);
+      console.log(id, data);
+      const options: FindOptionsWhere<ENTITY> = {
+        id,
+      } as unknown as FindOptionsWhere<ENTITY>;
+      const item = await this.genericRepository.findOneBy(options);
       if (!item) {
         throw CustomError.notFound(`No se encontro ${this.label}`);
       }
@@ -52,7 +59,7 @@ export abstract class GenericService<ENTITY, ID, DTO, PARTIAL_DTO> {
     }
   }
 
-  async softDelete(id: ID): Promise<boolean> {
+  async softDelete(id: string): Promise<boolean> {
     try {
       const deleteResponse = await this.genericRepository.softDelete(id);
       if (!deleteResponse.affected) {
@@ -89,6 +96,7 @@ export abstract class GenericService<ENTITY, ID, DTO, PARTIAL_DTO> {
         totalPages,
         totalRows: data[1],
       };
+      console.log(pagination);
       return {
         content: data[0],
         pagination,
@@ -99,9 +107,12 @@ export abstract class GenericService<ENTITY, ID, DTO, PARTIAL_DTO> {
     }
   }
 
-  async findOne(id: ID): Promise<CustomResponse<ENTITY>> {
+  async findOne(id: number): Promise<CustomResponse<ENTITY>> {
     try {
-      const item = await this.genericRepository.findOne(id);
+      const options: FindOptionsWhere<ENTITY> = {
+        where: { id },
+      } as unknown as FindOptionsWhere<ENTITY>;
+      const item = await this.genericRepository.findOne(options);
       if (!item) {
         throw CustomError.notFound(`No se encontro ${this.label}`);
       }

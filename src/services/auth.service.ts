@@ -1,5 +1,5 @@
-import { User } from '../data/postgresql/models/user.model';
-import { UserEntity } from '../domain/entities/user.entity';
+import { UserEntity } from '../data/postgresql/databaseEntities/user.entity';
+import { User } from '../domain/entities/user';
 import { JwtAdapter } from '../common/adapters/jwt.adapter';
 import { CustomError } from '../common/utilities/custom.error';
 import { bcryptAdapter } from '../common/adapters/bcript.adapter';
@@ -9,7 +9,7 @@ import { LoginUserDto } from '../domain/dtos/auth/login-user.dto';
 
 export class AuthService {
   public async registerUser(registerUserDto: RegisterUserDto) {
-    const userRepository = dataSourceDB.getRepository(User);
+    const userRepository = dataSourceDB.getRepository(UserEntity);
     console.log(`registerUser service`, { RegisterUserDto });
 
     const existUser = await userRepository.findOne({
@@ -19,14 +19,16 @@ export class AuthService {
     if (existUser) throw CustomError.badRequest('Username already exist');
 
     try {
-      registerUserDto.password = bcryptAdapter.hash(registerUserDto.password);
+      registerUserDto.password = bcryptAdapter.hash(
+        registerUserDto.password as string
+      );
       const user = userRepository.create(registerUserDto);
 
       // Encriptar la contraseña
 
       await userRepository.save(user);
 
-      const { password, ...userEntity } = UserEntity.fromObject(user);
+      const { password, ...userEntity } = User.fromObject(user);
 
       const token = await JwtAdapter.generateToken({ id: user.id });
       if (!token) throw CustomError.internalServer('Error while creating JWT');
@@ -41,7 +43,7 @@ export class AuthService {
   }
 
   public async loginUser(loginUserDto: LoginUserDto) {
-    const userRepository = dataSourceDB.getRepository(User);
+    const userRepository = dataSourceDB.getRepository(UserEntity);
 
     const user = await userRepository.findOne({
       where: { username: loginUserDto.username },
@@ -54,7 +56,7 @@ export class AuthService {
     );
     if (!isMatching) throw CustomError.badRequest('Password is not valid');
 
-    const { password, ...userEntity } = UserEntity.fromObject(user);
+    const { password, ...userEntity } = User.fromObject(user);
 
     const token = await JwtAdapter.generateToken({ id: user.id });
     if (!token) throw CustomError.internalServer('Error while creating JWT');

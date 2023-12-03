@@ -1,6 +1,6 @@
 import { CustomError } from '../../common/utilities/custom.error';
 
-export class UserEntity {
+export class User {
   constructor(
     public id: string,
     public name: string,
@@ -20,6 +20,6 @@ export class UserEntity {
     if (!username) throw CustomError.badRequest('Missing username');
     if (!password) throw CustomError.badRequest('Missing password');
 
-    return new UserEntity(_id || id, name, username, password, img);
+    return new User(_id || id, name, username, password, img);
   }
 }
