@@ -2,6 +2,11 @@
 
 Este proyecto previamente inicializado tiene todo lo necesario para trabajar con TypeScript, Express y Rest.
 
+Url de la api
+- https://api-blog-production-b1db.up.railway.app/api
+
+Url documentación
+- https://documenter.getpostman.com/view/11816366/2s9YeLXoux
 ## Instalación
 
 1. Clonar .env.template a .env y configurar las variables de entorno
