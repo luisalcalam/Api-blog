@@ -3,6 +3,7 @@ import { RegisterUserDto } from '../../domain/dtos/auth/register-user.dto';
 import { AuthService } from '../../services/auth.service';
 import { CustomError } from '../../common/utilities/custom.error';
 import { LoginUserDto } from '../../domain/dtos/auth/login-user.dto';
+import { PaginationDto } from '../../common/dtos/pagination.dto';
 
 export class AuthController {
   constructor(public readonly authService: AuthService) {}
@@ -35,5 +36,11 @@ export class AuthController {
       .then((user) => res.json(user))
       .catch((error) => this.handleError(error, res));
     // res.json({ msg: 'register' });
+  };
+
+  getAll = async (req: Request, res: Response) => {
+    const [paginationDto, _] = await PaginationDto.create(req.query);
+    const response = await this.authService.findAll(paginationDto);
+    res.json({ response });
   };
 }
